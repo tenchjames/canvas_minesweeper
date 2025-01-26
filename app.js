@@ -105,8 +105,6 @@ const numberOfBombs = 10;
 for (let i = 0; i < numberOfBombs; i++) {
   const randomIndex = randomIntFromRange(0, allCells.length - 1);
   allCells[randomIndex].isBomb = true;
-  allCells[randomIndex].isShown = true;
-
   allCells.splice(randomIndex, 1);
 }
 
@@ -208,13 +206,11 @@ window.addEventListener("mousedown", function (event) {
   const col = Math.floor(x / devicePixelRatio / size);
   const cell = grid[row][col];
   showCell(cell, row, col);
+  let isWin = true;
   if (cell.isBomb) {
     isGameOver = true;
-    setTimeout(() => {
-      alert("Game Over");
-    }, 100);
+    isWin = false;
   } else {
-    let isWin = true;
     for (let i = 0; i < grid.length; i++) {
       for (let j = 0; j < grid[i].length; j++) {
         const cell = grid[i][j];
@@ -227,11 +223,24 @@ window.addEventListener("mousedown", function (event) {
         break;
       }
     }
-    if (isWin) {
-      isGameOver = true;
-      setTimeout(() => {
-        alert("You Win!");
-      }, 100);
+  }
+  // if the game is ending, show all cells
+  if (isGameOver || isWin) {
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        grid[i][j].isShown = true;
+      }
     }
   }
+  if (isGameOver && !isWin) {
+    setTimeout(() => {
+      alert("Game Over!");
+    }, 100);
+  } else if (isWin) {
+    isGameOver = true;
+    setTimeout(() => {
+      alert("You Win!");
+    }, 100);
+  }
+
 });
